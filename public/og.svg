@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1">
+      <stop offset="0" stop-color="#0B0B0F"/>
+      <stop offset="1" stop-color="#11111A"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <circle cx="980" cy="120" r="260" fill="#C7A253" opacity="0.14"/>
+  <circle cx="250" cy="520" r="320" fill="#FFFFFF" opacity="0.06"/>
+
+  <text x="90" y="250" fill="#F7F6F2" font-size="64" font-family="serif">Farida Law SD</text>
+  <text x="90" y="320" fill="#C7A253" font-size="34" font-family="sans-serif">Trusted Counsel • Strong Advocacy</text>
+  <text x="90" y="390" fill="#F7F6F2" opacity="0.85" font-size="26" font-family="sans-serif">
+    El Cajon, CA • (619) 599-5129 • Crystal@faridalawsd.com
+  </text>
+</svg>
