@@ -6,14 +6,34 @@ export default function TestimonialCard({
   name: string;
 }) {
   return (
-    <figure className="rounded-2xl border border-ink/10 bg-white p-6 shadow-sm">
-      <div className="text-gold" aria-label="Five star rating">
+    <figure
+      className="
+        h-full
+        rounded-3xl
+        border border-white/15
+        bg-white/10
+        p-7
+        shadow-card
+        backdrop-blur
+      "
+    >
+      {/* Stars */}
+      <div className="text-gold text-sm tracking-wide">
         ★★★★★
       </div>
-      <blockquote className="mt-3 text-sm leading-relaxed text-ink/80">
+
+      {/* Quote */}
+      <blockquote className="mt-4 text-sm leading-relaxed text-white/85">
         “{quote}”
       </blockquote>
-      <figcaption className="mt-5 text-sm font-medium text-ink">— {name}</figcaption>
+
+      {/* Divider */}
+      <div className="mt-6 h-px w-full bg-gold/40" />
+
+      {/* Author */}
+      <figcaption className="mt-4 text-sm font-medium text-white">
+        — {name}
+      </figcaption>
     </figure>
   );
 }
