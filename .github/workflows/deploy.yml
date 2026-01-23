@@ -32,9 +32,9 @@ jobs:
       # 4. Build static site (Next.js export)
       - name: Build site
         run: npm run build
-        # env:
-        #   NEXT_PUBLIC_CONTACT_ENDPOINT: ${{ secrets.NEXT_PUBLIC_CONTACT_ENDPOINT }}
-        #   NEXT_PUBLIC_INTAKE_ENDPOINT: ${{ secrets.NEXT_PUBLIC_INTAKE_ENDPOINT }}
+        env:
+          NEXT_PUBLIC_CONTACT_ENDPOINT: ${{ secrets.NEXT_PUBLIC_CONTACT_ENDPOINT }}
+          NEXT_PUBLIC_INTAKE_ENDPOINT: ${{ secrets.NEXT_PUBLIC_INTAKE_ENDPOINT }}
 
       # 5. Configure AWS credentials
       - name: Configure AWS credentials
