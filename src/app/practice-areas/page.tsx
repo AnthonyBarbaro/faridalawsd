@@ -1,4 +1,3 @@
-
 import type { Metadata } from "next";
 import Container from "@/components/Container";
 import SectionHeading from "@/components/SectionHeading";
@@ -6,49 +5,130 @@ import { ButtonLink } from "@/components/ui/Button";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Practice Areas",
+  title: "Personal Injury Practice Areas | Farida Law SD",
+  description:
+    "Personal Injury practice areas served by Farida Law SD in El Cajon and San Diego County: car accidents, motorcycle accidents, truck collisions, slip and fall, pedestrian/bicycle injuries, and wrongful death.",
+  alternates: { canonical: "/practice-areas/" },
 };
 
-function getTypicalMatters(slug: string): string[] {
-  // You can customize these later in site.ts if you want.
-  switch (slug) {
-    case "immigration":
-      return [
-        "Family-based petitions",
-        "Adjustment of status",
-        "Naturalization and citizenship",
-        "Waivers and consular processing",
-      ];
-    case "family-law":
-      return [
-        "Divorce and legal separation",
-        "Child custody and visitation",
-        "Child and spousal support",
-        "Domestic violence restraining orders",
-      ];
-    case "estate-planning":
-      return [
-        "Wills and trusts",
-        "Powers of attorney",
-        "Advance healthcare directives",
-        "Probate and administration guidance",
-      ];
-    case "business-contracts":
-      return [
-        "Contract review and drafting",
-        "Business formation and compliance",
-        "Demand letters and negotiation",
-        "General counsel-style support",
-      ];
-    default:
-      return [
-        "Initial case review and goal-setting",
-        "Document preparation and strategy",
-        "Negotiation and communications",
-        "Clear next steps and timelines",
-      ];
-  }
-}
+type PIArea = {
+  slug: string;
+  title: string;
+  description: string;
+  typical: string[];
+  evidence: string[];
+};
+
+const piAreas: PIArea[] = [
+  {
+    slug: "car-accidents",
+    title: "Car Accidents",
+    description:
+      "Injury claims arising from rear-end collisions, intersection crashes, distracted driving, and unsafe lane changes.",
+    typical: [
+      "Whiplash and soft-tissue injuries",
+      "Back/neck injuries",
+      "Fractures",
+      "Concussions and head injuries",
+    ],
+    evidence: [
+      "Photos, dashcam, and scene documentation",
+      "Police report number and witness info",
+      "Medical records and treatment timeline",
+      "Insurance correspondence",
+    ],
+  },
+  {
+    slug: "motorcycle-accidents",
+    title: "Motorcycle Accidents",
+    description:
+      "High-impact crashes with serious injuries requiring careful investigation and a strong presentation of damages.",
+    typical: [
+      "Road rash and scarring",
+      "Broken bones",
+      "Traumatic brain injury (TBI)",
+      "Surgical and long-term treatment needs",
+    ],
+    evidence: [
+      "Helmet/gear condition and photos",
+      "Scene review + roadway hazards",
+      "Medical treatment records",
+      "Insurance policy details",
+    ],
+  },
+  {
+    slug: "truck-accidents",
+    title: "Truck Collisions",
+    description:
+      "Complex claims involving commercial carriers, higher insurance limits, and multiple potentially responsible parties.",
+    typical: [
+      "Severe injury claims",
+      "Multiple defendant cases",
+      "Commercial policy disputes",
+      "Serious damages evaluation",
+    ],
+    evidence: [
+      "Carrier/driver info and policy details",
+      "Evidence preservation requests (as needed)",
+      "Medical records and wage loss docs",
+      "Crash reporting information",
+    ],
+  },
+  {
+    slug: "slip-and-fall",
+    title: "Slip & Fall",
+    description:
+      "Premises liability matters involving unsafe conditions on property, including poor lighting, wet floors, and hazards.",
+    typical: [
+      "Falls in stores or parking lots",
+      "Apartment/common area hazards",
+      "Unsafe stairs/handrails",
+      "Inadequate warning signage",
+    ],
+    evidence: [
+      "Photos of the hazard (if possible)",
+      "Incident reports and witness info",
+      "Medical treatment documentation",
+      "Proof of property condition and notice",
+    ],
+  },
+  {
+    slug: "pedestrian-bicycle",
+    title: "Pedestrian & Bicycle Injuries",
+    description:
+      "Claims involving crosswalk impacts, roadway negligence, and unsafe driving that leads to serious injury.",
+    typical: [
+      "Crosswalk incidents",
+      "Bike lane collisions",
+      "Dooring incidents",
+      "Hit-and-run claims (case dependent)",
+    ],
+    evidence: [
+      "Location details and photos",
+      "Medical documentation",
+      "Witness contact details",
+      "Insurance information and communications",
+    ],
+  },
+  {
+    slug: "wrongful-death",
+    title: "Wrongful Death",
+    description:
+      "Professional, respectful support for families pursuing claims after a fatal incident.",
+    typical: [
+      "Fatal vehicle collisions",
+      "Negligent property conditions",
+      "Serious injury leading to fatality",
+      "Family coordination and case guidance",
+    ],
+    evidence: [
+      "Incident documentation",
+      "Records supporting damages and loss",
+      "Insurance information",
+      "Clear timeline of events",
+    ],
+  },
+];
 
 export default function PracticeAreasPage() {
   return (
@@ -56,9 +136,9 @@ export default function PracticeAreasPage() {
       <Container className="py-20">
         <div className="flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between">
           <SectionHeading
-            eyebrow="Services"
+            eyebrow="Personal Injury"
             title="Practice Areas"
-            description="Focused legal support with clear communication, meticulous preparation, and steady advocacy."
+            description="Focused representation for personal injury claims across El Cajon and San Diego County."
             className="text-white"
           />
 
@@ -77,16 +157,27 @@ export default function PracticeAreasPage() {
           </div>
         </div>
 
-        {/* List */}
+        {/* Quick note banner */}
+        <div className="mt-10 rounded-3xl border border-white/12 bg-white/10 p-7 backdrop-blur">
+          <p className="text-sm text-white/85">
+            If you were injured, it helps to document the basics early: accident type, date/location,
+            photos if available, and medical treatment. Avoid sending confidential information through this website.
+          </p>
+          <p className="mt-3 text-xs text-white/60">
+            Attorney Advertising. Results vary. Past outcomes do not guarantee future results.
+          </p>
+        </div>
+
+        {/* Practice area sections */}
         <div className="mt-12 grid gap-6">
-          {site.practiceAreas.map((p) => (
+          {piAreas.map((p) => (
             <section
               key={p.slug}
               id={p.slug}
               className="scroll-mt-24 rounded-3xl border border-white/15 bg-white/10 p-7 shadow-card backdrop-blur"
             >
               <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
-                <div className="max-w-2xl">
+                <div className="max-w-3xl">
                   <h2 className="font-serif text-2xl sm:text-3xl text-white">
                     {p.title}
                   </h2>
@@ -95,26 +186,40 @@ export default function PracticeAreasPage() {
                     {p.description}
                   </p>
 
-                  <p className="mt-3 text-sm text-white/70">
-                    Typical matters handled may include:
-                  </p>
+                  <div className="mt-6 grid gap-6 sm:grid-cols-2">
+                    <div className="rounded-2xl border border-white/10 bg-black/30 p-5">
+                      <p className="text-xs tracking-[0.22em] text-white/60 font-semibold">
+                        COMMONLY INVOLVES
+                      </p>
+                      <ul className="mt-4 grid gap-2">
+                        {p.typical.map((item) => (
+                          <li key={item} className="flex items-start gap-2 text-sm text-white/80">
+                            <span className="mt-1 inline-block h-1.5 w-1.5 rounded-full bg-gold" />
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
 
-                  <ul className="mt-4 grid gap-2 sm:grid-cols-2">
-                    {getTypicalMatters(p.slug).map((item) => (
-                      <li
-                        key={item}
-                        className="flex items-start gap-2 text-sm text-white/80"
-                      >
-                        <span className="mt-1 inline-block h-1.5 w-1.5 rounded-full bg-gold" />
-                        <span>{item}</span>
-                      </li>
-                    ))}
-                  </ul>
+                    <div className="rounded-2xl border border-white/10 bg-black/30 p-5">
+                      <p className="text-xs tracking-[0.22em] text-white/60 font-semibold">
+                        HELPFUL INFORMATION
+                      </p>
+                      <ul className="mt-4 grid gap-2">
+                        {p.evidence.map((item) => (
+                          <li key={item} className="flex items-start gap-2 text-sm text-white/80">
+                            <span className="mt-1 inline-block h-1.5 w-1.5 rounded-full bg-sky-300" />
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
 
                   <div className="mt-6 rounded-2xl border border-white/10 bg-black/30 p-4">
                     <p className="text-xs text-white/70">
-                      For an efficient initial review, submit a consultation request or provide
-                      intake details. Avoid sending confidential information until engagement is confirmed.
+                      For an efficient initial review, request a consultation or submit intake details.
+                      Avoid sending confidential information until engagement is confirmed.
                     </p>
                   </div>
                 </div>
@@ -125,7 +230,7 @@ export default function PracticeAreasPage() {
                       NEXT STEP
                     </p>
                     <p className="mt-3 text-sm text-white/85">
-                      Request a consultation to discuss your situation and options.
+                      Request a consultation to discuss your incident and options.
                     </p>
 
                     <div className="mt-5 grid gap-3">
@@ -157,10 +262,10 @@ export default function PracticeAreasPage() {
           <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
             <div className="max-w-2xl">
               <h3 className="font-serif text-2xl text-white">
-                Not sure which practice area fits?
+                Not sure where your situation fits?
               </h3>
               <p className="mt-2 text-sm text-white/75">
-                Share a brief overview and we’ll help identify next steps.
+                Share a brief overview and we’ll help identify appropriate next steps.
               </p>
             </div>
 
