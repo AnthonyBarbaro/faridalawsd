@@ -7,6 +7,41 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/Button";
 import { site } from "@/lib/site";
 
+/* ------------------ Helpers ------------------ */
+function formatPhone(value: string) {
+  const digits = value.replace(/\D/g, "").slice(0, 10);
+
+  if (digits.length < 4) return digits;
+  if (digits.length < 7) return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
+  return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+}
+
+function generateCaptcha() {
+  const a = Math.floor(Math.random() * 8) + 2; // 2..9
+  const b = Math.floor(Math.random() * 8) + 2; // 2..9
+  return {
+    a,
+    b,
+    question: `What is ${a} + ${b}?`,
+    answer: String(a + b),
+  };
+}
+
+const EMAIL_DOMAINS = ["gmail.com", "yahoo.com", "outlook.com"] as const;
+
+function applyEmailDomain(current: string, domain: string) {
+  const trimmed = current.trim();
+
+  // If they haven't typed anything yet, don't force a domain
+  if (!trimmed) return trimmed;
+
+  const [local] = trimmed.split("@");
+  if (!local) return trimmed;
+
+  return `${local}@${domain}`;
+}
+
+/* ------------------ Constants ------------------ */
 const PI_CASE_TYPES = [
   "Car Accident",
   "Motorcycle Accident",
@@ -18,19 +53,21 @@ const PI_CASE_TYPES = [
   "Other Injury",
 ] as const;
 
+/* ------------------ Schema ------------------ */
 const schema = z.object({
   fullName: z.string().min(2, "Please enter your name."),
   email: z.string().email("Please enter a valid email."),
-  phone: z.string().min(7, "Please enter a valid phone number."),
-  // Optional: quick triage
+  phone: z.string().min(14, "Please enter a valid phone number."),
   caseType: z.string().optional(),
   message: z.string().min(10, "Please add a short message."),
+  captchaAnswer: z.string().min(1, "Please answer the question."),
   website: z.string().optional(), // honeypot
 });
 
 type Values = z.infer<typeof schema>;
 type Status = "idle" | "sending" | "sent" | "error";
 
+/* ------------------ API helper ------------------ */
 async function postJson(endpoint: string, payload: unknown) {
   const res = await fetch(endpoint, {
     method: "POST",
@@ -38,26 +75,24 @@ async function postJson(endpoint: string, payload: unknown) {
     body: JSON.stringify(payload),
   });
 
-  // Try to read body for debugging / nicer errors
+  // Optional: surface server message
   const text = await res.text();
-  let data: unknown = null;
-  try {
-    data = text ? JSON.parse(text) : null;
-  } catch {
-    data = text;
-  }
-
   if (!res.ok) {
-    throw new Error(`Request failed (${res.status}). ${typeof data === "string" ? data : ""}`);
+    throw new Error(text || `Request failed (${res.status})`);
   }
 
-  return data;
+  // If you ever return JSON, you can parse here. Not required.
+  return text;
 }
 
+/* ================== COMPONENT ================== */
 export default function ConsultationForm() {
   const id = useId();
   const [status, setStatus] = useState<Status>("idle");
-  const [errorMsg, setErrorMsg] = useState<string>("");
+  const [errorMsg, setErrorMsg] = useState("");
+
+  // Generate captcha once per mount, and regenerate on success/failure as needed
+  const [captcha, setCaptcha] = useState(() => generateCaptcha());
 
   const CONTACT_ENDPOINT = process.env.NEXT_PUBLIC_CONTACT_ENDPOINT;
 
@@ -73,6 +108,9 @@ export default function ConsultationForm() {
   const {
     register,
     handleSubmit,
+    setValue,
+    setError,
+    watch,
     reset,
     formState: { errors, isSubmitting },
   } = useForm<Values>({
@@ -84,55 +122,72 @@ export default function ConsultationForm() {
       phone: "",
       caseType: "",
       message: "",
+      captchaAnswer: "",
       website: "",
     },
   });
 
+  const phoneValue = watch("phone");
+  const emailValue = watch("email");
+
+  /* ------------------ Submit ------------------ */
   const onSubmit = async (values: Values) => {
-    // Honeypot spam protection
+    // Honeypot
     if (values.website && values.website.trim()) return;
+
+    // Captcha check (client-side)
+    if (values.captchaAnswer.trim() !== captcha.answer) {
+      setError("captchaAnswer", {
+        type: "manual",
+        message: "Incorrect answer. Please try again.",
+      });
+      setCaptcha(generateCaptcha());
+      return;
+    }
 
     try {
       setStatus("sending");
       setErrorMsg("");
 
-      if (!CONTACT_ENDPOINT) {
-        // No demo mode — treat as config issue + show fallback contact
-        throw new Error("CONTACT_ENDPOINT_NOT_CONFIGURED");
-      }
+      if (!CONTACT_ENDPOINT) throw new Error("CONTACT_ENDPOINT_NOT_CONFIGURED");
 
       const { website, ...safeValues } = values;
 
-      // Don’t send empty optional fields
-      const payload = {
+      await postJson(CONTACT_ENDPOINT, {
         type: "contact",
         fullName: safeValues.fullName,
         email: safeValues.email,
         phone: safeValues.phone,
         caseType: safeValues.caseType?.trim() ? safeValues.caseType : undefined,
         message: safeValues.message,
+        // send captcha proof to backend
+        captchaAnswer: safeValues.captchaAnswer.trim(),
+        captchaExpected: captcha.answer, // (simple version)
         submittedAt: new Date().toISOString(),
         source: "faridalawsd.com",
         page: "consultation-request",
-      };
-
-      await postJson(CONTACT_ENDPOINT, payload);
+      });
 
       setStatus("sent");
       reset();
+      setCaptcha(generateCaptcha());
     } catch (err) {
       console.error(err);
       setStatus("error");
       setErrorMsg(
-        "We couldn’t submit your request right now. Please try again — or call/email us below."
+        "We couldn’t submit your request right now. Please try again — or contact us below."
       );
+      setCaptcha(generateCaptcha());
     }
   };
 
+  /* ------------------ Styles ------------------ */
   const inputBase =
-    "mt-2 w-full rounded-xl border border-white/12 bg-black/25 px-4 py-3 text-sm text-white placeholder-white/40 outline-none focus:border-gold/70 focus:ring-1 focus:ring-gold/40 disabled:opacity-60";
+    "mt-2 w-full rounded-xl border border-white/12 bg-black/25 px-4 py-3 text-sm text-white placeholder-white/40 outline-none focus:border-gold/70 focus:ring-1 focus:ring-gold/40";
   const labelBase = "block text-sm font-medium text-white/85";
   const errorBase = "mt-1 text-xs text-red-300";
+  const chip =
+    "inline-flex items-center rounded-full border px-3 py-1 text-xs transition whitespace-nowrap";
 
   return (
     <form
@@ -164,13 +219,32 @@ export default function ConsultationForm() {
           </label>
           <input
             id={`${id}-email`}
-            type="email"
             {...register("email")}
+            type="email"
             className={inputBase}
             placeholder="you@email.com"
             autoComplete="email"
             aria-invalid={!!errors.email}
           />
+
+          {/* Quick domain buttons */}
+          <div className="mt-2 flex flex-wrap gap-2">
+            <span className="text-xs text-white/55 mr-1">Quick domain:</span>
+            {EMAIL_DOMAINS.map((d) => (
+              <button
+                key={d}
+                type="button"
+                className={`${chip} border-white/12 bg-white/5 text-white/75 hover:bg-white/10 hover:text-white`}
+                onClick={() => {
+                  const next = applyEmailDomain(emailValue || "", d);
+                  setValue("email", next, { shouldValidate: true, shouldDirty: true });
+                }}
+              >
+                @{d}
+              </button>
+            ))}
+          </div>
+
           {errors.email && <p className={errorBase}>{errors.email.message}</p>}
         </div>
 
@@ -181,9 +255,16 @@ export default function ConsultationForm() {
           <input
             id={`${id}-phone`}
             type="tel"
-            {...register("phone")}
+            value={phoneValue || ""}
+            onChange={(e) =>
+              setValue("phone", formatPhone(e.target.value), {
+                shouldValidate: true,
+                shouldDirty: true,
+              })
+            }
             className={inputBase}
             placeholder="(619) 555-1234"
+            inputMode="tel"
             autoComplete="tel"
             aria-invalid={!!errors.phone}
           />
@@ -195,12 +276,7 @@ export default function ConsultationForm() {
         <label htmlFor={`${id}-caseType`} className={labelBase}>
           Injury Type (optional)
         </label>
-        <select
-          id={`${id}-caseType`}
-          {...register("caseType")}
-          className={inputBase}
-          aria-invalid={!!errors.caseType}
-        >
+        <select id={`${id}-caseType`} {...register("caseType")} className={inputBase}>
           <option value="">Select one…</option>
           {PI_CASE_TYPES.map((t) => (
             <option key={t} value={t} className="text-black">
@@ -223,6 +299,22 @@ export default function ConsultationForm() {
           aria-invalid={!!errors.message}
         />
         {errors.message && <p className={errorBase}>{errors.message.message}</p>}
+      </div>
+
+      {/* CAPTCHA */}
+      <div>
+        <label htmlFor={`${id}-captcha`} className={labelBase}>
+          Anti-spam: {captcha.question}
+        </label>
+        <input
+          id={`${id}-captcha`}
+          {...register("captchaAnswer")}
+          className={inputBase}
+          placeholder="Your answer"
+          inputMode="numeric"
+          aria-invalid={!!errors.captchaAnswer}
+        />
+        {errors.captchaAnswer && <p className={errorBase}>{errors.captchaAnswer.message}</p>}
       </div>
 
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
