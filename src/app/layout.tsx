@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import LocalBusinessJsonLd from "@/components/LocalBusinessJsonLd";
 import { site } from "@/lib/site";
+import Script from "next/script";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -127,9 +128,25 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
+    
     <html lang="en" className={`${inter.variable} ${cormorant.variable}`}>
       {/* Make the global default dark to avoid “white flash” */}
       <body className="min-h-dvh bg-ink text-white font-sans antialiased">
+        <Script
+            src="https://www.googletagmanager.com/gtag/js?id=G-NBDKKB598N"
+            strategy="afterInteractive"
+          />
+
+          <Script id="ga4" strategy="afterInteractive">
+            {`
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-NBDKKB598N', {
+                anonymize_ip: true
+              });
+            `}
+          </Script>
         <a
           href="#content"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-white focus:px-4 focus:py-2 focus:text-ink"
