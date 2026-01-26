@@ -112,17 +112,19 @@ export default function Navbar() {
                 <span className="font-serif text-lg text-white">F</span>
               </span>
 
-              <div className="flex items-center gap-3">
-                {/* If you truly want it as one word, change to: FaridaLawSD */}
-                <span className="font-serif text-lg sm:text-xl text-white whitespace-nowrap leading-none">
-                  Farida Law<span className="text-gold"></span>
-                </span>
+          <div className="flex flex-col leading-none">
+            <span className="font-serif text-lg sm:text-xl text-white whitespace-nowrap">
+              Farida Law<span className="text-gold"></span>
+            </span>
 
-                {/* Keep this subtle. You can change to PERSONAL INJURY if you want */}
-                <span className="hidden xl:inline text-[11px] tracking-[0.22em] text-white/55 whitespace-nowrap">
-                 ATTORNEY
-                </span>
-              </div>
+            <span className="hidden xl:block text-[10px] tracking-[0.26em] text-white/65 uppercase">
+              Personal Injury
+            </span>
+
+            <span className="hidden xl:block text-[10px] tracking-[0.22em] text-white/45 uppercase mt-[2px]">
+              Attorney
+            </span>
+          </div>
             </Link>
 
             {/* CENTER: Desktop nav (spread out, premium spacing) */}
@@ -257,6 +259,7 @@ export default function Navbar() {
                 <p className="mt-1 font-serif text-xl text-white whitespace-nowrap">
                   Farida Law San Diego<span className="text-gold"></span>
                 </p>
+                   <p className="mt-1 text-xs text-white/75">Personal Injury Attorney</p>
                 <p className="mt-1 text-xs text-white/60">San Diego, CA</p>
               </div>
 
