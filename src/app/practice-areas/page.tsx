@@ -111,23 +111,23 @@ const piAreas: PIArea[] = [
     ],
   },
   {
-    slug: "wrongful-death",
-    title: "Wrongful Death",
+    slug: "trusts-wills",
+    title: "Trusts & Wills",
     description:
-      "Professional, respectful support for families pursuing claims after a fatal incident.",
+      "Professional estate planning services focused on protecting your assets, honoring your wishes, and providing clarity for your family.",
     typical: [
-      "Fatal vehicle collisions",
-      "Negligent property conditions",
-      "Serious injury leading to fatality",
-      "Family coordination and case guidance",
+      "Wills and revocable living trusts",
+      "Beneficiary designations and asset distribution",
+      "Powers of attorney and healthcare directives",
+      "Estate planning updates after life changes",
     ],
     evidence: [
-      "Incident documentation",
-      "Records supporting damages and loss",
-      "Insurance information",
-      "Clear timeline of events",
+      "Asset and property information",
+      "Beneficiary and fiduciary details",
+      "Advance healthcare and financial preferences",
+      "Relevant family or financial documents",
     ],
-  },
+  }
 ];
 
 export default function PracticeAreasPage() {

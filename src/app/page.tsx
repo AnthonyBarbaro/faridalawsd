@@ -105,12 +105,18 @@ const piAreas: PIArea[] = [
     bullets: ["Liability review", "Medical impact", "Negotiation", "Clear next steps"],
   },
   {
-    slug: "wrongful-death",
-    title: "Wrongful Death",
+    slug: "trusts-wills",
+    title: "Trusts & Wills",
     description:
-      "Supportive, professional representation for families after fatal incidents.",
-    bullets: ["Damages analysis", "Claims guidance", "Respectful advocacy", "Case coordination"],
-  },
+      "Thoughtful es  tate planning services designed to protect your assets, honor your wishes, and provide clarity and security for your loved ones.",
+    bullets: [
+      "Wills and revocable living trusts",
+      "Asset distribution and beneficiary planning",
+      "Powers of attorney and advance directives",
+      "Clear guidance through the estate planning process",
+    ],
+  }
+
 ];
 
 // Safe icons you already have installed/working
@@ -207,7 +213,7 @@ export default function HomePage() {
             {/* Left */}
             <div className="max-w-xl">
               <p className="text-xs font-semibold tracking-[0.22em] text-gold/95">
-                FARIDA LAW SD • EL CAJON, CA
+                FARIDA LAW • SAN DIEGO • EL CAJON, CA
               </p>
 
               <h1 className="mt-4 font-serif text-4xl leading-tight sm:text-6xl">
