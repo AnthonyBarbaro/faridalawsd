@@ -5,13 +5,108 @@ import TestimonialCard from "@/components/TestimonialCard";
 import { ButtonLink } from "@/components/ui/Button";
 import { site } from "@/lib/site";
 
+const CANONICAL_PATH = "/reviews/";
+
 export const metadata: Metadata = {
-  title: "Reviews",
+  title: "Client Reviews",
+  description:
+    "Read client reviews for Farida Law SD. Feedback from clients who value professionalism, clarity, and trust. Results vary and reviews are not a guarantee of a similar outcome.",
+  alternates: {
+    canonical: CANONICAL_PATH,
+  },
+  openGraph: {
+    title: "Client Reviews | Farida Law SD",
+    description:
+      "Read client reviews for Farida Law SD. Feedback from clients who value professionalism, clarity, and trust.",
+    url: CANONICAL_PATH,
+    siteName: "Farida Law SD",
+    type: "website",
+    images: [
+      {
+        url: "/og-default.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Farida Law SD",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Client Reviews | Farida Law SD",
+    description:
+      "Read client reviews for Farida Law SD. Feedback from clients who value professionalism, clarity, and trust.",
+    images: ["/og-default.jpg"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-snippet": -1,
+      "max-image-preview": "large",
+      "max-video-preview": -1,
+    },
+  },
 };
 
+function JsonLd({ data }: { data: unknown }) {
+  return (
+    <script
+      type="application/ld+json"
+      // eslint-disable-next-line react/no-danger
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+    />
+  );
+}
+
 export default function ReviewsPage() {
+  const baseUrl = site.url; // absolute like "https://faridalawsd.com"
+  const canonicalUrl = new URL(CANONICAL_PATH, baseUrl).toString();
+
+  // If your testimonials are placeholders, consider setting robots to noindex until real reviews are live.
+  // For now, we keep index:true because you asked for indexing.
+  const testimonials = site.testimonials ?? [];
+
+  // JSON-LD: Page + a simple list representation of the testimonials shown on page
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "@id": canonicalUrl,
+    name: "Client Reviews | Farida Law SD",
+    url: canonicalUrl,
+    isPartOf: {
+      "@type": "WebSite",
+      name: "Farida Law SD",
+      url: baseUrl,
+    },
+    about: {
+      "@type": "LegalService",
+      name: "Farida Law SD",
+      url: baseUrl,
+    },
+    mainEntity: {
+      "@type": "ItemList",
+      name: "Client Reviews",
+      itemListElement: testimonials.map((t: any, idx: number) => ({
+        "@type": "ListItem",
+        position: idx + 1,
+        item: {
+          "@type": "Review",
+          reviewBody: t.quote,
+          author: {
+            "@type": "Person",
+            name: t.name,
+          },
+        },
+      })),
+    },
+  };
+
   return (
     <main className="bg-black text-white">
+      <JsonLd data={jsonLd} />
+
       <Container className="py-20">
         {/* Header */}
         <div className="flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between">

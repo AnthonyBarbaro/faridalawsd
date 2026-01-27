@@ -4,8 +4,49 @@ import SectionHeading from "@/components/SectionHeading";
 import ConsultationForm from "@/components/forms/ConsultationForm";
 import { site } from "@/lib/site";
 
+const CANONICAL_PATH = "/consultation-request/";
 export const metadata: Metadata = {
   title: "Consultation Request",
+  description:
+    "Request a consultation with Farida Law SD. Send a brief message and your contact details. Please avoid confidential information until engagement is confirmed.",
+  alternates: {
+    canonical: CANONICAL_PATH,
+  },
+  openGraph: {
+    title: "Request a Consultation | Farida Law SD",
+    description:
+      "Request a consultation with Farida Law SD. Send a brief message and your contact details.",
+    url: CANONICAL_PATH,
+    siteName: "Farida Law SD",
+    type: "website",
+    images: [
+      {
+        url: "/og-default.jpg", // put this in /public
+        width: 1200,
+        height: 630,
+        alt: "Farida Law SD",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Request a Consultation | Farida Law SD",
+    description:
+      "Request a consultation with Farida Law SD. Send a brief message and your contact details.",
+    images: ["/og-default.jpg"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-snippet": -1,
+      "max-image-preview": "large",
+      "max-video-preview": -1,
+    },
+  },
+
 };
 
 export default function ConsultationRequestPage() {

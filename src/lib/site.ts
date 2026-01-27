@@ -1,6 +1,6 @@
 export const site = {
-  name: "Farida Law SD",
-  legalName: "Farida Law SD",
+  name: "Farida Law San Diego",
+  legalName: "Farida Law",
   tagline: "Trusted Counsel. Strong Advocacy.",
   description:
     "Farida Law SD provides clear, professional legal guidance with a client-first approach. Request a consultation or submit your details through our secure intake form.",
