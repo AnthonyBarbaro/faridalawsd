@@ -187,16 +187,6 @@ export default function AboutPage() {
                   <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(420px_300px_at_45%_20%,rgba(199,162,83,0.14),transparent_75%)]" />
 
                   {/* KEY: fixed frame + object-cover + top anchor */}
-                  <div className="relative h-[160px] sm:h-[160px] lg:h-[160px]">
-                    <Image
-                      src="/images/crystal.png"
-                      alt="Attorney Crystal Farida"
-                      fill
-                      priority
-                      sizes="(max-width: 1024px) 92vw, 420px"
-                      className="object-contain object-top scale-[1.05]"
-                    />
-                  </div>
 
                   <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/40 to-transparent" />
                 </div>
